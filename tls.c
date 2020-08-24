@@ -40,7 +40,7 @@ void logssl(void *ctx, int level, const char *file, int line, const char *msg) {
     loginfo("%s", msg);
 }
 
-static int verify_pins(void *data, mbedtls_x509_crt *crt, int depth, uint32_t *flags) {
+/* static int verify_pins(void *data, mbedtls_x509_crt *crt, int depth, uint32_t *flags) {
     doh_client_t *client = data;
     unsigned char sha256[32];
     mbedtls_sha256(crt->tbs.p, crt->tbs.len, sha256, 0);
@@ -59,7 +59,7 @@ static int verify_pins(void *data, mbedtls_x509_crt *crt, int depth, uint32_t *f
         }
     }
     return 0;
-}
+} */
 
 int doh_tls_init(doh_client_t *client) {
     int ret;
@@ -87,15 +87,15 @@ int doh_tls_init(doh_client_t *client) {
     mbedtls_ssl_conf_max_version(&client->conf, 3, 3);
     mbedtls_ssl_conf_alpn_protocols(&client->conf, ALPN);
 
-    mbedtls_x509_crt_init(&client->crt);
+    /* mbedtls_x509_crt_init(&client->crt);
     if ((ret = mbedtls_x509_crt_parse(&client->crt, (const unsigned char *) cacert, sizeof(cacert))) != 0) {
         loginfo("Error loading CA certificates: -%x", -ret);
         return -1;
     }
     mbedtls_ssl_conf_cert_profile(&client->conf, &mbedtls_x509_crt_profile_default);
-    mbedtls_ssl_conf_ca_chain(&client->conf, &client->crt, NULL);
-    mbedtls_ssl_conf_authmode(&client->conf, MBEDTLS_SSL_VERIFY_REQUIRED);
-    mbedtls_ssl_conf_verify(&client->conf, verify_pins, client);
+    mbedtls_ssl_conf_ca_chain(&client->conf, &client->crt, NULL);*/
+    mbedtls_ssl_conf_authmode(&client->conf, MBEDTLS_SSL_VERIFY_NONE);
+    //mbedtls_ssl_conf_verify(&client->conf, verify_pins, client);
 
     // Init context
     mbedtls_ssl_init(&client->ssl);

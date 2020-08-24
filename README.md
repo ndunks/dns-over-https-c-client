@@ -23,6 +23,41 @@ Usage: ./doh_client -p listen-port [-h listen-host] [-t threads] [-u sdns://uri]
                               sdns://AgcAAAAAAAAABzEuMC4wLjGgENk8mGSlIfMGXMOlIlCcKvq7AVgcrZxtjon911-ep0cg63Ul-I8NlFj4GplQGb_TTLiczclX57DvMV8Q-JdjgRgSZG5zLmNsb3VkZmxhcmUuY29tCi9kbnMtcXVlcnk
 ```
 
+### Istalling as Systemd service
+
+``` bash
+
+sudo cp doh_client /usr/bin/
+cat <<EOF | sudo tee /lib/systemd/system/doh.service
+[Unit]
+Description=DOH CLient
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/bin/doh_client -p 1053
+
+[Install]
+WantedBy=multi-user.target
+
+EOF
+
+sudo systemctl enable doh
+sudo systemctl start doh
+
+cat <<EOF | sudo tee /etc/dnsmasq.d/doh.conf
+no-resolv
+no-poll
+no-dhcp-interface=
+server=127.0.0.1#1053
+address=/notifa.info/127.0.0.1
+EOF
+
+sudo systemctl restart dnsmasq
+
+```
+
+
 ### Example
 
 ```
